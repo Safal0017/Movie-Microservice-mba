@@ -9,6 +9,7 @@ public class POJOConvertor {
     public static MovieDTO covertMovieEntityToDTO(Movie movie) {
         MovieDTO movieDTO = new MovieDTO();
 
+        movieDTO.setMovieId(movie.getMovieId());
         movieDTO.setDuration(movie.getDuration());
         movieDTO.setTrailerUrl(movie.getTrailerUrl());
         movieDTO.setCoverPhotoUrl(movie.getCoverPhotoUrl());
@@ -22,6 +23,7 @@ public class POJOConvertor {
     public static Movie covertMovieDTOToEntity(MovieDTO movieDTO) {
         Movie movie = new Movie();
 
+        movie.setMovieId(movieDTO.getMovieId());
         movie.setDuration(movieDTO.getDuration());
         movie.setTrailerUrl(movieDTO.getTrailerUrl());
         movie.setCoverPhotoUrl(movieDTO.getCoverPhotoUrl());

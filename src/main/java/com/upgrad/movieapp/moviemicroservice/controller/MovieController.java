@@ -37,6 +37,7 @@ public class MovieController {
      * 	"releaseDate": "2019-04-26T05:30:00",
      * 	"trailerUrl": "TRAILER URL"
      * }
+     * movieId can be avoided while passing post request body
      * @param movieDTO
      * @return
      */
