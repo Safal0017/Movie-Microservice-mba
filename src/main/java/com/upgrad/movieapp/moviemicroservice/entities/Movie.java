@@ -13,19 +13,19 @@ public class Movie {
     @Column( length=50, nullable = false , unique = true)
     private String movieName ;
 
-    @Column(name="movie_desc", length = 500, nullable = false)
+    @Column(name="movie_desc", length = 500, nullable = true)
     private String movieDescription ;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime releaseDate;
 
     @Column(nullable = false)
     private int duration;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 500, nullable = true)
     private String coverPhotoUrl;
 
-    @Column(length =500, nullable = false)
+    @Column(length =500, nullable = true)
     private String trailerUrl;
 
     public int getMovieId() {
