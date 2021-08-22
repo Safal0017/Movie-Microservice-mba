@@ -1,8 +1,11 @@
 package com.upgrad.movieapp.moviemicroservice.controller;
 
 
+import com.upgrad.movieapp.moviemicroservice.dto.MovieBookingDTO;
 import com.upgrad.movieapp.moviemicroservice.dto.MovieDTO;
 import com.upgrad.movieapp.moviemicroservice.entities.Movie;
+import com.upgrad.movieapp.moviemicroservice.entities.Theatre;
+import com.upgrad.movieapp.moviemicroservice.entities.User;
 import com.upgrad.movieapp.moviemicroservice.services.MovieService;
 import com.upgrad.movieapp.moviemicroservice.utils.POJOConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +109,47 @@ public class MovieController {
 
         return new ResponseEntity(updatedMovieDTO, HttpStatus.OK) ;
     }
+
+
+    /**
+     * ENDPOINT: http://localhost:8585/movie_app/v1/bookings/movie
+     * {
+     *     "movie":{
+     *         "movieId":1
+     *     },
+     *     "user":{
+     *         "userId":1,
+     *         "firstName":"Jigar"
+     *     },
+     *     "theatre":{
+     *         "theatreId":1,
+     *         "movieId":1
+     *     }
+     * }
+     * @param movieBookingDTO
+     * @return
+     */
+
+    @PostMapping(value = "/bookings/movie", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity bookMovieDetails(@RequestBody MovieBookingDTO movieBookingDTO) {
+
+        Movie requestedMovie = POJOConvertor.covertMovieDTOToEntity(movieBookingDTO.getMovie());
+        User fromUser = POJOConvertor.covertUserDTOToEntity(movieBookingDTO.getUser());
+        Theatre requestedTheatre = POJOConvertor.covertTheatreDTOToEntity(movieBookingDTO.getTheatre());
+
+        boolean isValidBooking = movieService.bookMovie(fromUser, requestedMovie, requestedTheatre);
+
+        if(!isValidBooking)
+            return new ResponseEntity("Mr/Mrs. "+fromUser.getFirstName()+
+                    " Your Ticket for movieId "+requestedMovie.getMovieId()+
+                    " in theatreId "+requestedTheatre.getTheatreId()+
+                    " Not Booked !! Please Try Again!!", HttpStatus.OK);
+
+        return new ResponseEntity("Mr/Mrs. "+fromUser.getFirstName()+
+                " Your Ticket for movieId "+requestedMovie.getMovieId()+
+                " in theatreId "+requestedTheatre.getTheatreId()+
+                " Booked Successfully !!", HttpStatus.OK);
+    }
+
 
 }

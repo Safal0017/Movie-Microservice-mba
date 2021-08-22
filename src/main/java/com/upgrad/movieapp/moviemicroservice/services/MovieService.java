@@ -1,6 +1,8 @@
 package com.upgrad.movieapp.moviemicroservice.services;
 
 import com.upgrad.movieapp.moviemicroservice.entities.Movie;
+import com.upgrad.movieapp.moviemicroservice.entities.Theatre;
+import com.upgrad.movieapp.moviemicroservice.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,5 +23,7 @@ public interface MovieService {
     public List<Movie> getAllMovies();
 
     public Page<Movie> getPaginatedMovieDeatails(Pageable pageable);
+
+    public boolean bookMovie(User fromUser, Movie requestedMovie, Theatre requestedTheatre);
 
 }
