@@ -22,7 +22,7 @@ public interface MovieService {
 
     public List<Movie> getAllMovies();
 
-    public Page<Movie> getPaginatedMovieDeatails(Pageable pageable);
+    public Page<Movie> getPaginatedMovieDetails(Pageable pageable);
 
     public boolean bookMovie(User fromUser, Movie requestedMovie, Theatre requestedTheatre);
 

@@ -4,6 +4,8 @@ import com.upgrad.movieapp.moviemicroservice.dao.MovieDao;
 import com.upgrad.movieapp.moviemicroservice.entities.Movie;
 import com.upgrad.movieapp.moviemicroservice.entities.Theatre;
 import com.upgrad.movieapp.moviemicroservice.entities.User;
+import com.upgrad.movieapp.moviemicroservice.feign.TheatreServiceClient;
+import com.upgrad.movieapp.moviemicroservice.feign.UserServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -16,18 +18,29 @@ import java.util.*;
 @Service
 public class MovieServiceImpl implements MovieService{
 
-    @Value("${userApp.url}")
-    private String userAppUrl;
+    /**
+     * URLs from ConfigServer
+     */
 
-
-    @Value("${theatreApp.url}")
-    private String theatreAppUrl;
+//    @Value("${userApp.url}")
+//    private String userAppUrl;
+//
+//
+//    @Value("${theatreApp.url}")
+//    private String theatreAppUrl;
 
     @Autowired
     private MovieDao movieDao;
 
     @Autowired
     private RestTemplate restTemplate;
+
+    //Feign Client Object
+    @Autowired
+    private TheatreServiceClient theatreServiceClient;
+
+    @Autowired
+    private UserServiceClient userServiceClient;
 
     @Override
     public Movie acceptMovieDetails(Movie movie) {
@@ -79,7 +92,7 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
-    public Page<Movie> getPaginatedMovieDeatails(Pageable pageable) {
+    public Page<Movie> getPaginatedMovieDetails(Pageable pageable) {
         return movieDao.findAll(pageable);
     }
 
@@ -95,19 +108,32 @@ public class MovieServiceImpl implements MovieService{
          */
 
         //Check whether the user is valid or not
-        Map<String, String> userUriMap = new HashMap<>();
-        userUriMap.put("id", String.valueOf(user.getUserId()));
-        //String userAppUrl = "http://localhost:8080/user_app/v1/users/{id}";
-        User receivedUser = restTemplate.getForObject(userAppUrl, User.class, userUriMap);
+//        Map<String, String> userUriMap = new HashMap<>();
+//        userUriMap.put("id", String.valueOf(user.getUserId()));
+//        //String userAppUrl = "http://localhost:8080/user_app/v1/users/{id}";
+//        User receivedUser = restTemplate.getForObject(userAppUrl, User.class, userUriMap);
+//        if(receivedUser == null)
+//            return false;
+
+        //Check whether the theatre and movie combination is available
+//        Map<String, String> theatreUriMap = new HashMap<>();
+//        theatreUriMap.put("theatreId", String.valueOf(theatre.getTheatreId()));
+//        theatreUriMap.put("movieId", String.valueOf(theatre.getMovieId()));
+//        //String theatreAppUrl = "http://localhost:8082/theatre_app/v1/theatres/{theatreId}/movie/{movieId}";
+//        Theatre receivedTheatre = restTemplate.getForObject(theatreAppUrl, Theatre.class, theatreUriMap);
+//        if(receivedTheatre==null)
+//            return false;
+
+        /**
+         * Using Feign Client
+         */
+        //Check whether the user is valid or not
+        User receivedUser = userServiceClient.getUser(user.getUserId());
         if(receivedUser == null)
             return false;
 
         //Check whether the theatre and movie combination is available
-        Map<String, String> theatreUriMap = new HashMap<>();
-        theatreUriMap.put("theatreId", String.valueOf(theatre.getTheatreId()));
-        theatreUriMap.put("movieId", String.valueOf(theatre.getMovieId()));
-        //String theatreAppUrl = "http://localhost:8082/theatre_app/v1/theatres/{theatreId}/movie/{movieId}";
-        Theatre receivedTheatre = restTemplate.getForObject(theatreAppUrl, Theatre.class, theatreUriMap);
+        Theatre receivedTheatre = theatreServiceClient.getTheatre(theatre.getTheatreId(), theatre.getMovieId());
         if(receivedTheatre==null)
             return false;
 
